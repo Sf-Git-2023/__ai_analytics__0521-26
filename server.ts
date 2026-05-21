@@ -2,6 +2,11 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
+import dotenv from "dotenv";
+
+// 載入環境變數 (.env 及 .env.local)
+dotenv.config();
+dotenv.config({ path: ".env.local" });
 
 const app = express();
 const PORT = 3000;
@@ -55,9 +60,9 @@ app.post("/api/analyze", async (req, res) => {
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-      return res.status(500).json({
-        error: "伺服器未設定 GEMINI_API_KEY。請點選右上方「Settings > Secrets」設定金鑰。",
+    if (!apiKey || apiKey.includes("請在此處替換") || /[\u0080-\uffff]/.test(apiKey) || apiKey === "MY_GEMINI_API_KEY") {
+      return res.status(400).json({
+        error: "偵測到無效的 GEMINI_API_KEY！請確認已在 .env.local 中將其替換為您真實的 Gemini API 金鑰（通常是以 'AIzaSy' 開頭且僅包含英文字母、數字與底線）。",
       });
     }
 
