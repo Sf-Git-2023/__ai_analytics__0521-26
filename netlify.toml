@@ -1,0 +1,21 @@
+# Netlify 部署配置與路由重寫設定
+
+[build]
+  # 前端 Vite 打包後的靜態網頁輸出路徑，也是 Netlify 託管的發布目錄
+  publish = "dist"
+  # Netlify 雲端建置命令：僅需打包前端 (Vite) 即可
+  command = "npm run build:frontend"
+
+[functions]
+  # Netlify 函數目錄
+  directory = "netlify/functions"
+  # 採用 esbuild 作為 Node 函數編譯打包工具，支援 TypeScript
+  node_bundler = "esbuild"
+
+# 路由轉發重寫 (Redirects / Proxy)：
+# 將前端相對路徑 "/api/*" 的請求無縫代理至 Netlify 的 "/.netlify/functions/api/*" 函數
+# 如此一來，前端呼叫 fetch("/api/analyze") 不需要修改任何程式碼，200 代表隱式代理 (Rewrite)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
