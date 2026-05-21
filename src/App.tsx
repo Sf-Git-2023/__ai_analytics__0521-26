@@ -299,7 +299,7 @@ export default function App() {
       setParsedData(item.parsedData);
     }
     setActiveTab("preview");
-    showHistoryDrawer(false);
+    setShowHistoryDrawer(false);
     showNotification(`已還原歷史解析報告：${item.fileName}`);
   };
 
